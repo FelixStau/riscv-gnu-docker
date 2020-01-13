@@ -1,2 +1,2 @@
 # riscv-gnu-docker
-RISC V GNU tollchain docker container
+RISC V GNU toolchain docker container
