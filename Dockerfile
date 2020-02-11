@@ -1,7 +1,9 @@
-FROM docker.io/teeks99/boost-cpp-docker:gcc-9
+FROM gcc:9
+
+ARG BUILD_PARAMETER="--enable-multilib"
 
 RUN apt-get update \
-    && apt-get install -y \
+    && apt-get install -y --no-install-recommends \
             autoconf \
             automake \
             autotools-dev \
@@ -28,9 +30,12 @@ RUN git clone https://github.com/riscv/riscv-gnu-toolchain.git \
     && cd riscv-gnu-toolchain \
     && git submodule update --init --recursive
 WORKDIR /opt/riscv-gnu-toolchain
-RUN ./configure --prefix=/opt/riscv --with-arch=rv32imac --with-abi=ilp32 \
+RUN ./configure --prefix=/opt/riscv $BUILD_PARAMETER \
     && make
-## Add binary to PATH
+
+FROM gcc:9
+# Copy artefacts
+COPY --from=0 /opt/riscv /opt/riscv
+## set path and riscv env
 ENV PATH /opt/riscv/bin:$PATH
-## cleanup
-RUN rm -rf /opt/riscv-gnu-toolchain
+ENV RISCV /opt/riscv
