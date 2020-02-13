@@ -3,6 +3,10 @@
 A RISC-V GNU toolchain docker container which provides various compilation of
 different architectures(arch) and application binary interfaces(abi).
 
+## Tags
+The tags follow the format {ARCH}\_{ABI}, however the multilib/latest tag offers both
+32bit and 64bit functionality.
+
 ## Getting Started
 
 These instructions will cover usage information for the docker container.
@@ -69,7 +73,7 @@ Please open an issue at [GitHub](https://github.com/FelixStau/riscv-gnu-docker).
 
 ## Authors
 
-* **Felix Staudigl** - [](https://github.com/FelixStau)
+* [**Felix Staudigl**](https://github.com/FelixStau)
 
 ## License
 
