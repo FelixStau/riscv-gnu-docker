@@ -1,18 +1,17 @@
-FROM gcc:9
+FROM alpine
 
-ARG BUILD_PARAMETER="--enable-multilib"
+ARG ARCH="rv32gc"
+ARG ABI="ilp32d"
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-            autoconf \
-            automake \
-            autotools-dev \
+RUN apk --update add \
+            git \
+            build-base \
             curl \
-            libmpc-dev \
-            libmpfr-dev \
-            libgmp-dev \
+            mpc1-dev \
+            mpfr-dev \
+            gmp-dev \
             gawk \
-            build-essential \
+            alpine-sdk \
             bison \
             flex \
             texinfo \
@@ -20,9 +19,10 @@ RUN apt-get update \
             libtool \
             patchutils \
             bc \
-            zlib1g-dev \
-            libexpat-dev \
-    && rm -rf /var/lib/apt/lists/*
+            zlib-dev \
+            expat-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm /var/cache/apk/*
 
 # Build RISC V toolchain
 WORKDIR /opt
@@ -30,10 +30,10 @@ RUN git clone https://github.com/riscv/riscv-gnu-toolchain.git \
     && cd riscv-gnu-toolchain \
     && git submodule update --init --recursive
 WORKDIR /opt/riscv-gnu-toolchain
-RUN ./configure --prefix=/opt/riscv $BUILD_PARAMETER \
+RUN ./configure --prefix=/opt/riscv --with-arch=$ARCH --with-abi=$ABI \
     && make
 
-FROM gcc:9
+FROM alpine
 # Copy artefacts
 COPY --from=0 /opt/riscv /opt/riscv
 ## set path and riscv env
